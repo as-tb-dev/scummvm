@@ -529,8 +529,8 @@ bool ScummEngine_v72he::handleNextCharsetCode(Actor *a, int *code) {
 			endLoop = endText = true;
 			break;
 		default:
-			// Ignore the control code, reset the buffer position...
-			buffer--;
+			// Ignore the control code...
+			warning("ScummEngine_v72he::handleNextCharsetCode(): Ignoring invalid control code");
 		}
 	}
 	_charsetBufPos = buffer - _charsetBuffer;
@@ -1437,14 +1437,16 @@ int ScummEngine::convertMessageToString(const byte *msg, byte *dst, int dstSize)
 		if (chr == 0xFF) {
 			chr = src[num++];
 
-			// WORKAROUND for bugs #1675 and #2715, script bugs in German Indy3.
-			// Some German 'sz' (Eszett) characters were encoded incorrectly as
-			// 0xFF instead of 0xE1, triggering convertMessageToString() and then
-			// causing a fatal error there. We replace this by the correct encoding
-			// here. At least the DOS and Amiga German releases are affected.
+			// WORKAROUND: In the German releases of Indy3, some Eszett characters
+			// were encoded incorrectly as 0xFF instead of 0xE1 (see bugs #1675 and
+			// #2715). At least the DOS and Amiga German releases are affected.
+			// We've been fixing this since ScummVM 0.10.0 in order to prevent a
+			// fatal error, but since ScummVM 2.9.0 our convertMessageToString()
+			// is more accurate and won't cause an error anymore, so fixing the
+			// invalid characters now becomes a typo-fix Enhancement.
 			//
-			// See also ScummEngine::resStrLen().
-			if (_game.id == GID_INDY3 && _language == Common::DE_DEU &&
+			// See also the corresponding ScummEngine::resStrLen() workaround.
+			if (enhancementEnabled(kEnhTextLocFixes) && _game.id == GID_INDY3 && _language == Common::DE_DEU &&
 				((_roomResource == 23 && chr == 0x2E) ||
 				 (_roomResource == 21 && chr == 0x20))) {
 				num--;
@@ -1499,8 +1501,8 @@ int ScummEngine::convertMessageToString(const byte *msg, byte *dst, int dstSize)
 					}
 					break;
 				default:
-					// Invalid control code. Just print the character...
-					*dst++ = chr;
+					// Invalid control code. Just ignore it and set the buffer index where it should be...
+					num -= 2;
 				}
 				num += (_game.version == 8) ? 4 : 2;
 			}
@@ -1686,7 +1688,21 @@ int ScummEngine::convertNameMessage(byte *dst, int dstSize, int var) {
 	num = readVar(var);
 	if (num) {
 		const byte *ptr = getObjOrActorName(num);
+
 		if (ptr) {
+			// WORKAROUND: Some releases of Indy3 miss the description of one of the
+			// tunnels in the catacombs. For example, it's there in the Macintosh or
+			// in the Japanese FM-TOWNS release, but missing from the English FM-TOWNS
+			// or the DOS VGA releases. This is a minor issue, but since LEC themselves
+			// fixed this for some releases, we can do the same... just copy the object
+			// description from the other tunnel, if the former is empty.
+			if (_game.id == GID_INDY3 && _roomResource == 59 && num == 725 && *ptr == 0 &&
+				whereIsObject(724) != WIO_NOT_FOUND && enhancementEnabled(kEnhMinorBugFixes)) {
+				const byte *fallbackObjPtr = getObjOrActorName(724);
+				if (fallbackObjPtr)
+					ptr = fallbackObjPtr;
+			}
+
 			int increment = convertMessageToString(ptr, dst, dstSize);
 			// Save the final consonant (jongsung) of the last Korean character
 			// Used by Korean fan translated games (monkey1, monkey2)

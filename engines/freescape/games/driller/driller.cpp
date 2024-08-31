@@ -100,6 +100,13 @@ DrillerEngine::DrillerEngine(OSystem *syst, const ADGameDescription *gd) : Frees
 	_soundIndexMenu = -1;
 	_soundIndexStart = 9;
 	_soundIndexAreaChange = 5;
+
+	_soundIndexNoShield = 20;
+	_soundIndexNoEnergy = 20;
+	_soundIndexFallen = 20;
+	_soundIndexTimeout = 20;
+	_soundIndexForceEndGame = 20;
+	_soundIndexCrushed = 20;
 }
 
 DrillerEngine::~DrillerEngine() {
@@ -145,11 +152,13 @@ void DrillerEngine::initKeymaps(Common::Keymap *engineKeyMap, Common::Keymap *in
 	act->addDefaultInputMapping("w");
 	engineKeyMap->addAction(act);
 
+	// I18N: STEP SIZE: Measures the size of one movement in the direction you are facing (1-250 standard distance units (SDUs))
 	act = new Common::Action("INCSTEPSIZE", _("Increase Step Size"));
 	act->setCustomEngineActionEvent(kActionIncreaseStepSize);
 	act->addDefaultInputMapping("s");
 	engineKeyMap->addAction(act);
 
+	// I18N: STEP SIZE: Measures the size of one movement in the direction you are facing (1-250 standard distance units (SDUs))
 	act = new Common::Action("DECSTEPSIZE", _("Decrease Step Size"));
 	act->setCustomEngineActionEvent(kActionDecreaseStepSize);
 	act->addDefaultInputMapping("x");
@@ -167,12 +176,14 @@ void DrillerEngine::initKeymaps(Common::Keymap *engineKeyMap, Common::Keymap *in
 	act->addDefaultInputMapping("f");
 	engineKeyMap->addAction(act);
 
+	// I18N: drilling rig is an in game item
 	act = new Common::Action("DEPLOY", _("Deploy drilling rig"));
 	act->setCustomEngineActionEvent(kActionDeployDrillingRig);
 	act->addDefaultInputMapping("JOY_LEFT_SHOULDER");
 	act->addDefaultInputMapping("d");
 	engineKeyMap->addAction(act);
 
+	// I18N: drilling rig is an in game item
 	act = new Common::Action("COLLECT", _("Collect drilling rig"));
 	act->setCustomEngineActionEvent(kActionCollectDrillingRig);
 	act->addDefaultInputMapping("c");
@@ -294,6 +305,7 @@ void DrillerEngine::loadAssets() {
 	_noShieldMessage = _messagesList[15];
 	_noEnergyMessage = _messagesList[16];
 	_fallenMessage = _messagesList[17];
+	_forceEndGameMessage = _messagesList[18];
 	// Small extra feature: allow player to be crushed in Driller
 	_crushedMessage = "CRUSHED!";
 }
@@ -941,6 +953,8 @@ void DrillerEngine::updateTimeVariables() {
 
 	if (_lastMinute != minutes) {
 		_lastMinute = minutes;
+		if (_gameStateVars[k8bitVariableEnergy] > 0)
+			_gameStateVars[k8bitVariableEnergy] = _gameStateVars[k8bitVariableEnergy] - 1;
 		_gameStateVars[0x1e] += 1;
 		_gameStateVars[0x1f] += 1;
 		executeLocalGlobalConditions(false, true, false); // Only execute "on collision" room/global conditions

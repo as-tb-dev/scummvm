@@ -28,6 +28,7 @@
 #include "mtropolis/data.h"
 #include "mtropolis/runtime.h"
 #include "mtropolis/render.h"
+#include "mtropolis/coroutine_protos.h"
 
 namespace Video {
 
@@ -97,7 +98,7 @@ public:
 	bool readAttribute(MiniscriptThread *thread, DynamicValue &result, const Common::String &attrib) override;
 	MiniscriptInstructionOutcome writeRefAttribute(MiniscriptThread *thread, DynamicValueWriteProxy &result, const Common::String &attrib) override;
 
-	VThreadState consumeCommand(Runtime *runtime, const Common::SharedPtr<MessageProperties> &msg) override;
+	VThreadState asyncConsumeCommand(Runtime *runtime, const Common::SharedPtr<MessageProperties> &msg) override;
 
 	void activate() override;
 	void deactivate() override;
@@ -125,6 +126,11 @@ protected:
 	void onPauseStateChanged() override;
 	void onSegmentUnloaded(int segmentIndex) override;
 
+	struct MovieElementConsumeCommandCoroutine {
+		CORO_DEFINE_RETURN_TYPE(void);
+		CORO_DEFINE_PARAMS_3(MovieElement *, self, Runtime *, runtime, Common::SharedPtr<MessageProperties>, msg);
+	};
+
 private:
 	IntRange computeRealRange() const;
 
@@ -141,21 +147,15 @@ private:
 
 	MiniscriptInstructionOutcome scriptSetRangeTyped(MiniscriptThread *thread, const IntRange &range);
 
-	struct StartPlayingTaskData {
-		StartPlayingTaskData() : runtime(nullptr) {}
-
-		Runtime *runtime;
+	struct StartPlayingCoroutine {
+		CORO_DEFINE_RETURN_TYPE(void);
+		CORO_DEFINE_PARAMS_2(MovieElement *, self, Runtime *, runtime);
 	};
 
-	struct SeekToTimeTaskData {
-		SeekToTimeTaskData() : runtime(nullptr), timestamp(0) {}
-
-		Runtime *runtime;
-		uint32 timestamp;
+	struct SeekToTimeCoroutine {
+		CORO_DEFINE_RETURN_TYPE(void);
+		CORO_DEFINE_PARAMS_3(MovieElement *, self, Runtime *, runtime, uint32, timestamp);
 	};
-
-	VThreadState startPlayingTask(const StartPlayingTaskData &taskData);
-	VThreadState seekToTimeTask(const SeekToTimeTaskData &taskData);
 
 	bool _cacheBitmap;
 	bool _alternate;
@@ -236,7 +236,7 @@ public:
 	bool readAttribute(MiniscriptThread *thread, DynamicValue &result, const Common::String &attrib) override;
 	MiniscriptInstructionOutcome writeRefAttribute(MiniscriptThread *thread, DynamicValueWriteProxy &result, const Common::String &attrib) override;
 
-	VThreadState consumeCommand(Runtime *runtime, const Common::SharedPtr<MessageProperties> &msg) override;
+	VThreadState asyncConsumeCommand(Runtime *runtime, const Common::SharedPtr<MessageProperties> &msg) override;
 
 	void activate() override;
 	void deactivate() override;
@@ -263,27 +263,25 @@ public:
 private:
 	MToonElement(const MToonElement &other);
 
-	struct StartPlayingTaskData {
-		StartPlayingTaskData() : runtime(nullptr) {}
-
-		Runtime *runtime;
+	struct MToonConsumeCommandCoroutine {
+		CORO_DEFINE_RETURN_TYPE(void);
+		CORO_DEFINE_PARAMS_3(MToonElement *, self, Runtime *, runtime, Common::SharedPtr<MessageProperties>, msg);
 	};
 
-	struct StopPlayingTaskData {
-		StopPlayingTaskData() : runtime(nullptr) {}
-
-		Runtime *runtime;
+	struct StartPlayingCoroutine {
+		CORO_DEFINE_RETURN_TYPE(void);
+		CORO_DEFINE_PARAMS_2(MToonElement *, self, Runtime *, runtime);
 	};
 
-	struct ChangeFrameTaskData {
-		ChangeFrameTaskData() : runtime(nullptr), frame(0) {}
-
-		Runtime *runtime;
-		uint32 frame;
+	struct StopPlayingCoroutine {
+		CORO_DEFINE_RETURN_TYPE(void);
+		CORO_DEFINE_PARAMS_2(MToonElement *, self, Runtime *, runtime);
 	};
 
-	VThreadState startPlayingTask(const StartPlayingTaskData &taskData);
-	VThreadState stopPlayingTask(const StopPlayingTaskData &taskData);
+	struct ChangeFrameCoroutine {
+		CORO_DEFINE_RETURN_TYPE(void);
+		CORO_DEFINE_PARAMS_3(MToonElement *, self, Runtime *, runtime, uint32, frame);
+	};
 
 	void playMedia(Runtime *runtime, Project *project) override;
 	MiniscriptInstructionOutcome scriptSetRate(MiniscriptThread *thread, const DynamicValue &value);
@@ -411,7 +409,7 @@ public:
 	bool readAttribute(MiniscriptThread *thread, DynamicValue &result, const Common::String &attrib) override;
 	MiniscriptInstructionOutcome writeRefAttribute(MiniscriptThread *thread, DynamicValueWriteProxy &writeProxy, const Common::String &attrib) override;
 
-	VThreadState consumeCommand(Runtime *runtime, const Common::SharedPtr<MessageProperties> &msg) override;
+	VThreadState asyncConsumeCommand(Runtime *runtime, const Common::SharedPtr<MessageProperties> &msg) override;
 
 	void activate() override;
 	void deactivate() override;
@@ -443,14 +441,20 @@ private:
 	MiniscriptInstructionOutcome scriptSetBalance(MiniscriptThread *thread, const DynamicValue &value);
 	MiniscriptInstructionOutcome scriptSetAsset(MiniscriptThread *thread, const DynamicValue &value);
 
-	struct StartPlayingTaskData {
-		StartPlayingTaskData() : runtime(nullptr) {}
-
-		Runtime *runtime;
+	struct SoundElementConsumeCommandCoroutine {
+		CORO_DEFINE_RETURN_TYPE(void);
+		CORO_DEFINE_PARAMS_3(SoundElement *, self, Runtime *, runtime, Common::SharedPtr<MessageProperties>, msg);
 	};
 
-	VThreadState startPlayingTask(const StartPlayingTaskData &taskData);
-	VThreadState stopPlayingTask(const StartPlayingTaskData &taskData);
+	struct StartPlayingCoroutine {
+		CORO_DEFINE_RETURN_TYPE(void);
+		CORO_DEFINE_PARAMS_2(SoundElement *, self, Runtime *, runtime);
+	};
+
+	struct StopPlayingCoroutine {
+		CORO_DEFINE_RETURN_TYPE(void);
+		CORO_DEFINE_PARAMS_2(SoundElement *, self, Runtime *, runtime);
+	};
 
 	void setLoop(bool loop);
 	void setVolume(uint16 volume);

@@ -400,6 +400,7 @@ static const PlainGameDescriptor directorGames[] = {
 	{ "pystmake",			"The Making of Pyst" },
 	{ "quantumgate2",		"The Vortex: Quantum Gate II" },
 	{ "quizwiz",			"Quiz Wiz: Cyber Trivia" },
+	{ "quijoteint",			"El Quijote Interactivo" },  // Spanish title, English selectable in-game
 	{ "rainbowfish1",		"Rainbow Fish: The most beautiful fish in the ocean!" },
 	{ "rainbowfish2",		"Rainbow Fish and the Whale" },
 	{ "realpool",			"RealPool" },
@@ -632,6 +633,10 @@ static const PlainGameDescriptor directorGames[] = {
 	{ "lifeuniverse",		"Life in the Universe" },
 	{ "louvre",				"Le Louvre: The palace & its paintings" },
 	{ "lovedisk",			"Lovedisk 95" },
+	{ "magiciansecrets1",	"Magician's Secrets vol. 1: Cards" },
+	{ "magiciansecrets2",	"Magician's Secrets vol. 2: Close Ups" },
+	{ "magiciansecrets3",	"Magician's Secrets vol. 3: Table Magic" },
+	{ "magiciansecrets4",	"Magician's Secrets vol. 4: Professional Tricks" },
 	{ "makers",				"Makers of the 20th Century" },
 	{ "mediabook",			"The MediaBook CD for Director" },
 	{ "moag",				"The Museum of Anything Goes" },
@@ -640,6 +645,7 @@ static const PlainGameDescriptor directorGames[] = {
 	{ "msdinosaurs",		"Microsoft Dinosaurs" },
 	{ "msoceans",			"Microsoft Oceans" },
 	{ "mswine",				"Microsoft Wine Guide" },
+	{ "multimediastudio",	"The Multimedia Cartoon Studio" },
 	{ "mysteriousegypt",	"Mysterious Egypt" }, // aka Voyage in Egypt
 	{ "newslinks",			"ABC NewsLinks" },
 	{ "nia4",				"News in Action 4" },
@@ -1453,6 +1459,7 @@ static const PlainGameDescriptor directorGames[] = {
 
 	// Titles containing Director extras
 	{ "amgpremiere",		"The American Girls Premiere" },
+	{ "aquazonedx",			"Aquazone Deluxe" },
 	{ "darylfgates",		"Police Quest Q&A with Daryl F. Gates" },
 	{ "dcanyoncd",			"Dino CD Audio Player" },
 	{ "freeallangels",		"Ash: Free All Angels Video Mixer" },
@@ -1472,9 +1479,6 @@ static const PlainGameDescriptor directorGames[] = {
 	{ "ultrobotss",			"Screen Saver Viewer" },
 	{ "urubonus",			"Uru: Ages Beyond Myst Bonus CD" },
 	{ "williamsbts",		"Williams Arcade Classics: Behind the Scenes" },
-//	{ "aquazonelibrary",	"Aquazone Library" },
-//	{ "aquazoneshop",		"Aquazone Shop" },
-//	{ "aquazoneuserguide",	"Aquazone User's Guide" },
 
 	// DVD-ROM bonus content
 	{ "planetrav",			"Planetary Traveler" },
@@ -1783,8 +1787,6 @@ static const PlainGameDescriptor directorGames[] = {
 	{ "vug2005",			"Vivendi Universal Games 2005 E3 DPK" },
 	{ "westwood",			"Westwood Studios Digital Press Kit 2000" },
 
-	// Unknown (to sort)
-	{ "multimediastudio",	"The Multimedia Cartoon Studio" },
 	{ 0, 0 }
 };
 
@@ -2049,6 +2051,11 @@ static const DirectorGameDescription gameDescriptions[] = {
 									  "DATA/GA00.MMM",		"0bd279685bdc6569a5ca2bcc6e458f1b", 324508, 310),
 	WINGAME2t("gadget", "Room(306)",  "GADGET/ROOM306.EXE",	"7d0657bab79bc396a0c5b2271fbfeb16", 369009,
 									  "DATA/GA00.MMM",		"0bd279685bdc6569a5ca2bcc6e458f1b", 324508, 310),
+	// Win rerelease
+	WINGAME2("gadget", "",			  "GADGET/GADGET.EXE",	"t:56b006cd4c970094b92ada995c9eccd1", 369009,
+									  "DATA/GA00.MMM",		"t:52c011f34fe932b0894c6c3597d0d6a2", 324388, 310),
+	WINGAME2("gadget", "Room(306)",   "GADGET/ROOM306.EXE", "t:7d0657bab79bc396a0c5b2271fbfeb16", 369009,
+									  "DATA/GA00.MMM",		"t:52c011f34fe932b0894c6c3597d0d6a2", 324388, 310),
 	MACGAME1_l("gadget", "",		  "GADGET",		"f5277c53bacd27936158dd3867e587e2", 392650, Common::JA_JPN, 311),
 	MACGAME1_l("gadget", "Room(306)", "Room(306)",	"f5277c53bacd27936158dd3867e587e2", 392648, Common::JA_JPN, 311),
 	// MACGAME1_l("gadget", "Read Me",	  "Read Me",	"f5277c53bacd27936158dd3867e587e2", 392651, Common::JA_JPN, 311),
@@ -3522,10 +3529,27 @@ static const DirectorGameDescription gameDescriptions[] = {
 	MACDEMO1_l("aquazone", "Demo (Version 1.5)", "AZ demo", "97474208c44c78f26bef8b2011d341aa", 487303, Common::JA_JPN, 404),
 	WINDEMO1t_l("aquazone", "Demo", "AZDEMO.EXE", "4644e6e5015ed2c7e4a30619c5efc464", 4011337, Common::JA_JPN, 404),
 
+	// Only extras are Director
+	// Win User's Guide is D5
+	MACGAME1("aquazonedx", "Library",	   "AZ Library",		"r:6959850ead8a673f324fb381f0abf0fb",  483490, 404),
+	MACGAME1("aquazonedx", "Shop",		   "AZ Shop",			"r:9119c79fc7e16c1ca1b1eedc7ea5234e",  705417, 404),
+	MACGAME2("aquazonedx", "User's Guide", "User's Guide",  	"rt:e9142e428628e8d43252c70af96145f4", 705417,
+										   "xn--Icon-ja6e", 	"r:aad55d6e2c9c1a96096ba06003e5a7db",    2264, 404),
+	WINGAME2("aquazonedx", "Library",	   "LIBRARY.EXE",	    "t:2414b3987a76cc060d187d4789b196ad",  690377,
+										   "FILES/LIBRARY.DIR", "d:5350e942fe2f744448b1168ba69fcdaf", 1605010, 404),
+	WINGAME1("aquazonedx", "Shop",		   "AZSHOP.EXE",		"t:9ac82e2bb82fa061313b16cee4cdcb41",  697169, 404),
+
 	MACGAME2_l("aramata", "", "START", "0c7bbb4b24823e5ab871cb4c1d6f3710", 484095,
 							  "SRC/MACLOBBY.Dxr", "2332900b20b0d33e0617e5e7505923e8", 290058, Common::JA_JPN, 404),
 	WINGAME2t_l("aramata", "", "START.EXE", "bb031b7d7a57557636530e80b4c061b3", 747081,
 							   "SRC/WINLOBBY.Dxr", "f53af0b58070d2450a3672847434b609", 5282042, Common::JA_JPN, 404),
+
+	// Found on "Magician's Secrets vol. 1-2" (and probably other Arc Media titles)
+	// Later releases are D5
+	MACGAME2("arcmedia", "", "CATALOG/Arc Media's Catalog", "r:a546ef2b921a9b48fd93928f1a505f22",  483490,
+							 "CATALOG/PREVIEW.MOV",		    "d:b548dd6c5fc8232a4738cf62749aa271", 7718314, 404),
+	WINGAME2("arcmedia", "", "CATALOG/CATALOG.EXE",		    "t:ac75fef4439344a214bb386af06ab78f", 4174041,
+							 "CATALOG/PREVIEW.MOV",		    "d:b548dd6c5fc8232a4738cf62749aa271", 7718314, 404),
 
 	MACGAME1("arcofdoom", "", "Arc Player (4mb)", "ea553e3f3fa123ad38fa5249621e8c8b", 295170, 404),
 	WINGAME2("arcofdoom", "", "ARC.EXE", 		  "fd3e9ad004597b01656b28c348a2ae7f", 687973,
@@ -4797,6 +4821,27 @@ static const DirectorGameDescription gameDescriptions[] = {
 	MACGAME1t_l("magicgambo", "", "xn--2bkaa4eta0c3e9iua0t", "53c5358b9c3e42489fd0336711f3fddb", 307247, Common::JA_JPN, 402),
 	WINGAME1t_l("magicgambo", "", "GAMBO.EXE", "95de6388a87a1da68a0fff34481a1734", 697025, Common::JA_JPN, 404),
 
+	MACGAME2("magiciansecrets1", "", "MAGIC1/Magician's Secrets Vol. 1", "rt:082857ddc82a742aeee90aa7ed8e943a", 483490,
+									 "MAGIC1/TRICKS.DIR",		  		 "d:6edaebe99349eee4796e0d7d6c5b2ce1",  129516, 404),
+	WINGAME2("magiciansecrets1", "", "MAGIC1/MAGIC.EXE",  "t:0890c2fbd9fc7c798d2192dc8119f05e", 698269,
+									 "MAGIC1/TRICKS.DIR", "d:6edaebe99349eee4796e0d7d6c5b2ce1", 129516, 404),
+	// TRAC report #14854
+	WINGAME2("magiciansecrets1", "", "MAGIC1/MAGIC.EXE",	   "t:2328e6e10b16b66f80fc720f7ad6bebb", 1785085,
+									 "MOVIES/ESSENTL/ARC.MOV", "d:a03e62c0636d8325e05782f2e41aaefe",  845454, 404),
+
+	MACGAME2("magiciansecrets2", "", "MAGIC2/Magician's Secrets Vol. 2", "rt:082857ddc82a742aeee90aa7ed8e943a", 483490,
+									 "MAGIC2/TRICKS.DIR",		  		 "d:781d73f1262eec65e8b7119f73b0d464",  151194, 404),
+	WINGAME2("magiciansecrets2", "", "MAGIC2/MAGIC.EXE",  "t:0890c2fbd9fc7c798d2192dc8119f05e", 698269,
+									 "MAGIC2/TRICKS.DIR", "d:781d73f1262eec65e8b7119f73b0d464", 151194, 404),
+	// TRAC report #14854
+	WINGAME2("magiciansecrets2", "", "MAGIC2/MAGIC.EXE",	   "t:3138e7e696028051ad0aca23bcf9556f", 1810225,
+									 "MOVIES/ESSENTL/ARC.MOV", "d:87aa2fe5e1fdc32b5ddd10eab68403e1", 1004826, 404),
+
+	MACGAME2("magiciansecrets3", "", "MAGIC3/Magician's Secrets Vol. 3", "rt:eabfb3b2e0f2d010631687d04ebc269a", 483490,
+									 "MAGIC3/TRICKS.DIR",				 "d:eb00c0fdda781befae4365e534f38539",  141294, 404),
+	WINGAME2("magiciansecrets3", "", "MAGIC3/MAGIC.EXE",  "t:d209abf8b8d7587e2542f514c09ae0a7", 3110917,
+									 "MAGIC3/TRICKS.DIR", "d:eb00c0fdda781befae4365e534f38539", 141294, 404),
+
 	// Original filename is Make•A•Mug™ V1.0
 	MACGAME1("makeamug", "v1.0", "xn--MakeAMug V1.0-lt6gb312b", "4f8bb7ad0cbcec1815538ba15a899061", 304279, 400),
 
@@ -5155,7 +5200,8 @@ static const DirectorGameDescription gameDescriptions[] = {
 
 	WINGAME1("noddytoytown", "", "MNWG/NODDY.EXE", "d16d57c823205e32759e1771bfdbb330", 4505770, 404),
 
-	WINDEMO1("noir", "Demo", "NOIRDEMO.EXE", "a9690aa58c6da36b7a6bf88fd4c81ffc", 10949309, 404),
+	WINDEMO2("noir", "Demo", "NOIRDEMO.EXE", "t:2fcfc8d2fefb872512159a111a7102a9", 10949309,
+							 "CYBRLOGO.AVI", "d:297569fc2092e65faea69e0fd14cc862",  2601192, 404),
 
 	// Original filename is Nomis™ PPC
 	MACGAME1("nomis", "", "Nomis PPC", "6dd87d48277cf2cd886e5168266ce4bf", 58051, 403),
@@ -5168,9 +5214,10 @@ static const DirectorGameDescription gameDescriptions[] = {
 	// From CD Loisirs Nº6
 	MACDEMO1("onevolution", "Demo", "Stephen Jay Gould", "77f4098988d5386794d1530065f514cd", 301669, 400),
 
-	WINGAME1("operafatal", "",	 "OPERA.EXE",		 "2b9da5566698a1f4b453e1a27e00ad29", 697739, 400),
 	MACGAME2("operafatal", "",	 "OPERA FATAL",		 "f5033f237ad1b1639fc46d01a82ac380", 285310,
 								 "Opera/SPRINT.Dxr", "3e86f01eeac5fa3349c5177378997a7f", 694912, 400),
+	WINGAME2("operafatal", "",	 "OPERA.EXE",		 "t:1708e82d4b297a1e74fe683f86521dc4", 697739,
+								 "OPERA/SPRINT.DXR", "d:9415903c9259c67731d24a70d9d9e1e0", 694758, 400),
 	MACGAME2_l("operafatal", "", "OPERA FATAL",		 "f5033f237ad1b1639fc46d01a82ac380", 285310,
 								 "Opera/SPRINT.Dxr", "3eb6f5568c9ced258059e2cfd30751c5", 479616, Common::IT_ITA, 400),
 	// From bugreport #13466
@@ -5407,6 +5454,9 @@ static const DirectorGameDescription gameDescriptions[] = {
 	// Original filename is '除虫菊Vol.1 Demo(PPC)'
 	MACDEMO1_l("pyrethrum1", "Demo", "xn--Vol.1 Demo(PPC)-u825b41x5o6e", "422270206b9bd6aff43bbe95047f6ce9", 60665, Common::JA_JPN, 404),
 	WINDEMO1t_l("pyrethrum1", "Demo", "VOL1DEMO.EXE", "bbe7ddbe439266f2ed57b9723f8a5c6c", 746843, Common::JA_JPN, 404),
+
+	// Bilingual Eng-Esp
+	WINGAME1("quijoteint", "", "DQUIJOTE.EXE", "t:4016edf8ec9240c649e8c2a0881669a6", 697019, 404),
 
 	// Original filename is 'ボルテックス'
 	MACDEMO1_l("quantumgate2", "Demo",	 "xn--pckua2al3iyd", "b7e69c37b7355022d400c14aa97c5d54", 484067, Common::JA_JPN, 404),
@@ -6090,6 +6140,9 @@ static const DirectorGameDescription gameDescriptions[] = {
 	MACDEMO1("aptesampler", "", "Product Sampler", "aa6a527c1314eae56f00d9b9fb587683", 719033, 501),
 	WINDEMO1t("aptesampler", "", "APTE32.EXE", "a42cd36dd6224f4382f676f946e48914", 1410355, 501),
 
+	// Mac version is D4
+	WINGAME1("aquazonedx", "User's Guide", "AZGUIDE.EXE", "t:c1326952834ff759a24da42f44c2b251", 3151425, 500),
+
 	WINGAME1("arad", "", "arad95nt.exe", "3460ad87d2ba57104e2810a77b53c220", 2623135, 500),
 
 	// Retail CD release from BeachWare, Inc.
@@ -6112,9 +6165,15 @@ static const DirectorGameDescription gameDescriptions[] = {
 	WINGAME2("arcadesubs", "",		"shware32.exe", "1a7acbba10a7246ba58c1d53fc7203f5", 1410427,
 									"Caverns.Dxr",	"57bf22de8a2f1822e9259d4a3d8e3f5a", 3188250, 501),
 
-	MACGAME1("arcmedia", "", "MAC.EXE",		"231d3041df162be4a0ddd36a74eb03b6", 716997, 501),
+	MACGAME2("arcmedia", "", "MAC.EXE",		"rt:672a46f9b5ec2625fd4a3ae777783c4a", 716741,
+							 "000MAIN.DXR", "d:caf7c82faf8a8cf6cad538fb57c2e7dd", 311790, 501),
 	WINGAME2("arcmedia", "", "WIN95.EXE",	"1a7acbba10a7246ba58c1d53fc7203f5", 1411325,
 							 "000MAIN.DXR", "0fb364d9201b3b652f575282abb6ea16", 311662, 501),
+	// Found on "Magician's Secrets vol. 4"
+	MACGAME2("arcmedia", "", "MAC.EXE",		"rt:672a46f9b5ec2625fd4a3ae777783c4a", 716741,
+							 "000MAIN.DXR", "d:0fb364d9201b3b652f575282abb6ea16", 311662, 501),
+	WINGAME2("arcmedia", "", "WIN95.EXE",	"t:cf52040c779c29f63545a01f392d83cb", 1411387,
+							 "000MAIN.DXR", "d:0fb364d9201b3b652f575282abb6ea16", 311662, 501),
 
 	// Launcher, ' ATMOS ' in the root, is also Director
 	MACGAME1_l("atmos", "", "mac/ATMOS", "4c38a51a21a1ad231f218c4786ff771d", 105599, Common::JA_JPN, 501),
@@ -6679,6 +6738,12 @@ static const DirectorGameDescription gameDescriptions[] = {
 	WINDEMO1("madcc12", "Demo",		 "MAD12.EXE",  "842014a812b454620f64b860fd7211f0", 932335, 501),
 	WINDEMO1("madcc12", "Slideshow", "SLIDES.EXE", "2e62abdad839e42068afdcd0644d7dcf", 1192485, 501),
 	WINDEMO1("madccpk", "Demo",		 "MADPK.EXE",  "842014a812b454620f64b860fd7211f0", 932303, 501),
+
+	// Volumes 1-3 are D4
+	MACGAME2("magiciansecrets4", "", "Magic",			   "rt:1d2bf2296ac66259a9da1e2b9dc73904", 719005,
+									 "PROGRAM/TRICKS.DIR", "d:c78b433c80ceeb425b311f1529a087fe",  122986, 501),
+	WINGAME2("magiciansecrets4", "", "WIN95.EXE",		   "t:cf52040c779c29f63545a01f392d83cb", 1411387,
+									 "PROGRAM/TRICKS.DIR", "d:c78b433c80ceeb425b311f1529a087fe",  122986, 501),
 
 	// English hybrid version is D4
 	// Bugreport #14065
@@ -9510,8 +9575,9 @@ static const DirectorGameDescription gameDescriptions[] = {
 	// Classic Mac OS and Windows executables are D8
 	MACGAME1("nobel100", "OS X", "data/MacOSX/Mac OSX Start", "332aaddc1bc68a89277ef016466a7140", 1295390, 900),
 
-	MACGAME1_l("operafatal", "OS X", "Opera OSX", "3ab7133c17cd4f175e5cb14c6750766e", 222001, Common::DE_DEU, 900),
-	WINGAME1_l("operafatal", "", "Opera.exe", "05e89a3d53d270cac3b53e0a6f9352f5", 2747652, Common::DE_DEU, 900),
+	MACGAME1_l("operafatal", "OS X", "Opera OSX",		 "r:3ab7133c17cd4f175e5cb14c6750766e",  221745, Common::DE_DEU, 900),
+	WINGAME2_l("operafatal", "",	 "Opera.exe",		 "t:d864c202f1296412ae0488ed3d05cc93", 2747652,
+									 "Game/Filofax.dxr", "d:c2bc16d99b54c219bcb93a4d39924670", 1323000, Common::DE_DEU, 900),
 
 	WINGAME1t_l("pettson2", "", "Gubben2.exe", "b50358ea0422c4b903ed261fa995b71f", 2187128, Common::NB_NOR, 900),
 	MACGAME1t_l("pettson2", "MacOS", "Gubben2", "1768526c25ae041638f02312852dbe2b", 215165, Common::NB_NOR, 900),
@@ -9725,8 +9791,9 @@ static const DirectorGameDescription gameDescriptions[] = {
 	WINGAME2("miareading1", "Autorun", "Autorun.exe",  "t:afd92c9530a812f15d049f690b3bad94", 2637304,
 									   "kInstall.dir", "d:7f80606d6bdd66a79fee53e667c3fa91", 395151, 1000),
 
-	//Opera Fatale Rerelease
-	WINGAME1_l("operafatal", "", "Opera.exe", "t:4697e5faa068d6f7b445bd332b13218b", 2737592, Common::DE_DEU, 1010),
+	//Opera Fatale Rerelease (Heureka Classics)
+	WINGAME2_l("operafatal", "", "Opera.exe",		 "t:4697e5faa068d6f7b445bd332b13218b", 2737592,
+								 "Game/Filofax.dxr", "d:4cac84340cc5e642af8ddf3a66bc015b", 1323126, Common::DE_DEU, 1010),
 
 	//Physicus Rerelease
 	WINGAME1_l("physicus", "", "Physikus.exe", "t:116fff983036c75a80a7f061940de65a", 2751837, Common::DE_DEU, 1010),

@@ -42,17 +42,29 @@ private:
 	machine *_keys = nullptr;
 	machine *_cards = nullptr;
 	int _rptmhr = 0;
+	int _rptmr15 = 0;
 	int _val1 = 0;
 	int _val2 = 0;
 	int _ripReachHand = 0;
 	int _ripHiHand = 0;
 	int _pickupBall = 0;
-	machine *_ripPickupBall = nullptr;
+	machine *_ripAction = nullptr;
+	int _lookMirror = 0;
+	int _tableRaises = 0;
+	int _paintingOpening = 0;
+	int _ripThrowsBall = 0;
+	int _deskOpening = 0;
+	int _cabinetOpens = 0;
 
-	void disableHotspots();
 	void setHotspots();
 	bool takeKeys();
 	bool takeBilliardBall();
+	bool billiardBallOnTable();
+	void useSwitchPaintingOpen();
+	void useSwitchPaintingClosed();
+	void useAceOfSpades1();
+	void useAceOfSpades2();
+	bool lookBilliardBall();
 
 public:
 	Room406() : Room() {}

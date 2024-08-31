@@ -216,11 +216,13 @@ void DarkEngine::initKeymaps(Common::Keymap *engineKeyMap, Common::Keymap *infoS
 	act->addDefaultInputMapping("w");
 	engineKeyMap->addAction(act);
 
+	// I18N: STEP SIZE: Measures the size of one movement in the direction you are facing (1-250 standard distance units (SDUs))
 	act = new Common::Action("INCSTEPSIZE", _("Increase Step Size"));
 	act->setCustomEngineActionEvent(kActionIncreaseStepSize);
 	act->addDefaultInputMapping("s");
 	engineKeyMap->addAction(act);
 
+	// I18N: STEP SIZE: Measures the size of one movement in the direction you are facing (1-250 standard distance units (SDUs))
 	act = new Common::Action("DECSTEPSIZE", _("Decrease Step Size"));
 	act->setCustomEngineActionEvent(kActionDecreaseStepSize);
 	act->addDefaultInputMapping("x");
@@ -751,6 +753,9 @@ void DarkEngine::drawBinaryClock(Graphics::Surface *surface, int xPosition, int 
 	if (_gameStateControl == kFreescapeGameStatePlaying)
 		number = _ticks / 2;
 	else if (_gameStateControl == kFreescapeGameStateEnd) {
+		if (_endGameDelayTicks > 0) // Wait until the endgame is ready
+			return;
+
 		if (_gameStateVars[kVariableDarkEnding] == 0)
 			number = (1 << 15) - 1;
 		else

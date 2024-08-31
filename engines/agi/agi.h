@@ -101,7 +101,8 @@ enum AgiGameType {
 	GType_PreAGI = 0,
 	GType_V1 = 1,
 	GType_V2 = 2,
-	GType_V3 = 3
+	GType_V3 = 3,
+	GType_A2 = 4
 };
 
 enum AgiGameFeatures {
@@ -111,11 +112,6 @@ enum AgiGameFeatures {
 	GF_FANMADE     = (1 << 3), // marks fanmade games
 	GF_2GSOLDSOUND = (1 << 5),
 	GF_EXTCHAR     = (1 << 6)  // use WORDS.TOK.EXTENDED
-};
-
-enum BooterDisks {
-	BooterDisk1 = 0,
-	BooterDisk2 = 1
 };
 
 enum AgiGameID {
@@ -144,6 +140,7 @@ enum AgiGameID {
 
 enum AGIErrors {
 	errOK = 0,
+	errFilesNotFound,
 	errBadFileOpen,
 	errNotEnoughMemory,
 	errBadResource,
@@ -264,6 +261,7 @@ enum AgiMonitorType {
  */
 enum AgiComputerType {
 	kAgiComputerPC = 0,
+	kAgiComputerApple2 = 3,
 	kAgiComputerAtariST = 4,
 	kAgiComputerAmiga = 5,
 	kAgiComputerApple2GS = 7
@@ -533,6 +531,23 @@ struct AgiGame {
 	}
 };
 
+struct AgiDiskVolume {
+	uint32 disk;
+	uint32 offset;
+
+	AgiDiskVolume() : disk(_EMPTY), offset(0) {}
+	AgiDiskVolume(uint32 d, uint32 o) : disk(d), offset(o) {}
+};
+
+/**
+ * Apple II version of the format for LOGDIR, VIEWDIR, etc.
+ * See AgiLoader_A2::loadDir for more details.
+ */
+enum A2DirVersion {
+	A2DirVersionOld,  // 4 bits for volume, 8 for track
+	A2DirVersionNew,  // 5 bits for volume, 7 for track
+};
+
 class AgiLoader {
 public:
 	AgiLoader(AgiEngine *vm) : _vm(vm) {}
@@ -569,14 +584,37 @@ protected:
 	AgiEngine *_vm;
 };
 
-class AgiLoader_v1 : public AgiLoader {
+class AgiLoader_A2 : public AgiLoader {
+public:
+	AgiLoader_A2(AgiEngine *vm) : AgiLoader(vm) {}
+	~AgiLoader_A2() override;
+
+	void init() override;
+	int loadDirs() override;
+	uint8 *loadVolumeResource(AgiDir *agid) override;
+	int loadObjects() override;
+	int loadWords() override;
+
 private:
-	Common::Path _filenameDisk0;
-	Common::Path _filenameDisk1;
+	Common::Array<Common::SeekableReadStream *> _disks;
+	Common::Array<AgiDiskVolume> _volumes;
+	AgiDir _logDir;
+	AgiDir _picDir;
+	AgiDir _viewDir;
+	AgiDir _soundDir;
+	AgiDir _objects;
+	AgiDir _words;
 
-	int loadDir_DDP(AgiDir *agid, int offset, int max);
-	int loadDir_BC(AgiDir *agid, int offset, int max);
+	int readDiskOne(Common::SeekableReadStream &stream, Common::Array<uint32> &volumeMap);
+	static bool readInitDir(Common::SeekableReadStream &stream, byte index, AgiDir &agid);
+	static bool readDir(Common::SeekableReadStream &stream, int position, AgiDir &agid);
+	static bool readVolumeMap(Common::SeekableReadStream &stream, uint32 position, uint32 bufferLength, Common::Array<uint32> &volumeMap);
 
+	A2DirVersion detectDirVersion(Common::SeekableReadStream &stream);
+	bool loadDir(AgiDir *dir, Common::SeekableReadStream &disk, uint32 dirOffset, uint32 dirLength, A2DirVersion dirVersion);
+};
+
+class AgiLoader_v1 : public AgiLoader {
 public:
 	AgiLoader_v1(AgiEngine *vm) : AgiLoader(vm) {}
 
@@ -585,6 +623,23 @@ public:
 	uint8 *loadVolumeResource(AgiDir *agid) override;
 	int loadObjects() override;
 	int loadWords() override;
+
+private:
+	Common::Array<Common::String> _imageFiles;
+	Common::Array<AgiDiskVolume> _volumes;
+	AgiDir _logDir;
+	AgiDir _picDir;
+	AgiDir _viewDir;
+	AgiDir _soundDir;
+	AgiDir _objects;
+	AgiDir _words;
+
+	bool readDiskOneV1(Common::SeekableReadStream &stream);
+	bool readDiskOneV2001(Common::SeekableReadStream &stream, int &vol0Offset);
+	static bool readInitDirV1(Common::SeekableReadStream &stream, byte index, AgiDir &agid);
+	static bool readInitDirV2001(Common::SeekableReadStream &stream, byte index, AgiDir &agid);
+
+	bool loadDir(AgiDir *dir, Common::File &disk, uint32 dirOffset, uint32 dirLength);
 };
 
 class AgiLoader_v2 : public AgiLoader {
@@ -868,7 +923,7 @@ public:
 	void newRoom(int16 newRoomNr);
 	void resetControllers();
 	void interpretCycle();
-	int playGame();
+	void playGame();
 
 	void allowSynthetic(bool);
 	void processScummVMEvents();
@@ -879,13 +934,12 @@ public:
 	// Objects
 public:
 	int loadObjects(const char *fname);
-	int loadObjects(Common::File &fp);
+	int loadObjects(Common::SeekableReadStream &fp, int flen);
 	const char *objectName(uint16 objectNr);
 	int objectGetLocation(uint16 objectNr);
 	void objectSetLocation(uint16 objectNr, int location);
 private:
 	int decodeObjects(uint8 *mem, uint32 flen);
-	int readObjects(Common::File &fp, int flen);
 
 	// Logic
 public:
@@ -941,8 +995,8 @@ public:
 	int decodeView(byte *resourceData, uint16 resourceSize, int16 viewNr);
 
 private:
-	void unpackViewCelData(AgiViewCel *celData, byte *compressedData, uint16 compressedSize);
-	void unpackViewCelDataAGI256(AgiViewCel *celData, byte *compressedData, uint16 compressedSize);
+	void unpackViewCelData(AgiViewCel *celData, byte *compressedData, uint16 compressedSize, int16 viewNr);
+	void unpackViewCelDataAGI256(AgiViewCel *celData, byte *compressedData, uint16 compressedSize, int16 viewNr);
 
 public:
 	bool isEgoView(const ScreenObjEntry *screenObj);
@@ -982,6 +1036,7 @@ public:
 
 	int waitKey();
 	int waitAnyKey();
+	void waitAnyKeyOrFinishedSound();
 
 	void nonBlockingText_IsShown();
 	void nonBlockingText_Forget();

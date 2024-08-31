@@ -480,9 +480,11 @@ void AgiEngine::initialize() {
 	//       drivers, and I'm not sure what they are. For now, they might
 	//       as well be called "PC Speaker" and "Not PC Speaker".
 
-	// If used platform is Apple IIGS then we must use Apple IIGS sound emulation
-	// because Apple IIGS AGI games use only Apple IIGS specific sound resources.
-	if (getPlatform() == Common::kPlatformApple2GS) {
+	// If platform is Apple or CoCo3 then their sound emulation must be used.
+	// The sound resources in these games have platform-specific formats.
+	if (getPlatform() == Common::kPlatformApple2) {
+		_soundemu = SOUND_EMU_APPLE2;
+	} else if (getPlatform() == Common::kPlatformApple2GS) {
 		_soundemu = SOUND_EMU_APPLE2GS;
 	} else if (getPlatform() == Common::kPlatformCoCo3) {
 		_soundemu = SOUND_EMU_COCO3;
@@ -529,7 +531,9 @@ void AgiEngine::initialize() {
 
 	_text->charAttrib_Set(15, 0);
 
-	if (getVersion() <= 0x2001) {
+	if (getPlatform() == Common::kPlatformApple2) {
+		_loader = new AgiLoader_A2(this);
+	} else if (getVersion() <= 0x2001) {
 		_loader = new AgiLoader_v1(this);
 	} else if (getVersion() <= 0x2999) {
 		_loader = new AgiLoader_v2(this);
@@ -592,9 +596,14 @@ Common::Error AgiEngine::go() {
 	}
 	inGameTimerReset();
 
-	runGame();
+	int ec = runGame();
 
-	return Common::kNoError;
+	switch (ec) {
+	case errOK:            return Common::kNoError;
+	case errFilesNotFound: return Common::kNoGameDataFoundError;
+	case errBadFileOpen:   return Common::kReadingFailed;
+	default:               return Common::kUnknownError;
+	}
 }
 
 void AgiEngine::syncSoundSettings() {

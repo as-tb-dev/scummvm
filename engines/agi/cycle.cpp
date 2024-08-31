@@ -316,8 +316,7 @@ uint16 AgiEngine::processAGIEvents() {
 	return key;
 }
 
-int AgiEngine::playGame() {
-	int ec = errOK;
+void AgiEngine::playGame() {
 	const AgiAppleIIgsDelayOverwriteGameEntry *appleIIgsDelayOverwrite = nullptr;
 	const AgiAppleIIgsDelayOverwriteRoomEntry *appleIIgsDelayRoomOverwrite = nullptr;
 
@@ -477,8 +476,6 @@ int AgiEngine::playGame() {
 	} while (!(shouldQuit() || _restartGame));
 
 	_sound->stopSound();
-
-	return ec;
 }
 
 int AgiEngine::runGame() {
@@ -489,7 +486,8 @@ int AgiEngine::runGame() {
 		debugC(2, kDebugLevelMain, "game loop");
 		debugC(2, kDebugLevelMain, "game version = 0x%x", getVersion());
 
-		if (agiInit() != errOK)
+		ec = agiInit();
+		if (ec != errOK)
 			break;
 
 		if (_restartGame) {
@@ -511,6 +509,10 @@ int AgiEngine::runGame() {
 		case Common::kPlatformAmiga:
 			setVar(VM_VAR_COMPUTER, kAgiComputerAmiga);
 			setVar(VM_VAR_SOUNDGENERATOR, kAgiSoundTandy);
+			break;
+		case Common::kPlatformApple2:
+			setVar(VM_VAR_COMPUTER, kAgiComputerApple2);
+			setVar(VM_VAR_SOUNDGENERATOR, kAgiSoundPC);
 			break;
 		case Common::kPlatformApple2GS:
 			setVar(VM_VAR_COMPUTER, kAgiComputerApple2GS);
@@ -557,7 +559,7 @@ int AgiEngine::runGame() {
 		setVar(VM_VAR_MAX_INPUT_CHARACTERS, 38);
 		_text->promptDisable();
 
-		ec = playGame();
+		playGame();
 		agiDeinit();
 	} while (_restartGame);
 
